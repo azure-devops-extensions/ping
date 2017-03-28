@@ -1,8 +1,8 @@
 {
     "manifestVersion": 1,
-    "id": "vsts-extension-ts-seed-simple",
+    "id": "ping",
     "version": "0.1.1",
-    "name": "vsts-extension-ts-seed-simple",
+    "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Describe your extension.",
     "publisher": "your-publisher",
@@ -61,11 +61,11 @@
         }
     ],
     "categories": [
-        "Integrate"
+        "Collaborate"
     ],
     "contributions": [
         {
-            "id": "vsts-extension-ts-seed-simple-action",
+            "id": "context-menu",
             "type": "ms.vss-web.action-provider",
             "description": "",
             "targets": [
