@@ -51,7 +51,7 @@
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask("build", ["ts:build", "copy:scripts"]);
+    grunt.registerTask("build", ["clean", "ts:build", "copy:scripts"]);
 
     grunt.registerTask("package-dev", ["build", "exec:package_dev"]);
     grunt.registerTask("package-release", ["build", "exec:package_release"]);

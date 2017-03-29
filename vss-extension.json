@@ -1,13 +1,13 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "0.1.1",
+    "version": "0.1.3",
     "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Describe your extension.",
-    "publisher": "your-publisher",
+    "publisher": "ottostreifel",
     "icons": {
-        "default": "img/logo.png"
+        "default": "img/logo.svg"
     },
     "targets": [
         {
@@ -15,31 +15,14 @@
         }
     ],
     "tags": [
-        "Sample"
+        "Notification",
+        "Work Item",
+        "Query Results",
+        "Backlog"
     ],
     "content": {
         "details": {
             "path": "details.md"
-        }
-    },
-    "links": {
-        "home": {
-            "uri": "https://bit.ly"
-        },
-        "getstarted": {
-            "uri": "https://bit.ly"
-        },
-        "learn": {
-            "uri": "https://bit.ly"
-        },
-        "support": {
-            "uri": "https://bit.ly"
-        },
-        "repository": {
-            "uri": "https://bit.ly"
-        },
-        "issues": {
-            "uri": "https://bit.ly"
         }
     },
     "branding": {
@@ -69,7 +52,8 @@
             "type": "ms.vss-web.action-provider",
             "description": "",
             "targets": [
-                "ms.vss-work-web.work-item-context-menu"
+                "ms.vss-work-web.query-result-work-item-menu",
+                "ms.vss-work-web.backlog-item-menu"
             ],
             "properties": {
                 "group": "contributed",
