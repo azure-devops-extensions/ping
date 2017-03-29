@@ -5,11 +5,6 @@
                 tsconfig: true,
                 "outDir": "./build"
             },
-            buildTest: {
-                tsconfig: "testTsConfig.json",
-                "outDir": "./test/",
-                src: ["./scripts/**/*.tests.ts"]
-            },
             options: {
                 fast: 'never'
             }
@@ -48,26 +43,15 @@
             }
         },
 
-        clean: ["scripts/**/*.js", "*.vsix", "build", "test"],
-
-        karma: {
-            unit: {
-                configFile: 'karma.conf.js',
-                singleRun: true,
-                browsers: ["PhantomJS"]
-            }
-        }
+        clean: ["scripts/**/*.js", "*.vsix", "build"],
     });
     
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-exec");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask("build", ["ts:build", "copy:scripts"]);
-
-    grunt.registerTask("test", ["ts:buildTest", "karma:unit"]);
 
     grunt.registerTask("package-dev", ["build", "exec:package_dev"]);
     grunt.registerTask("package-release", ["build", "exec:package_release"]);
