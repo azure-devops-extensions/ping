@@ -10,7 +10,9 @@
         "./typings/index.d.ts"
     ],
     "files": [
-        "scripts/app.ts",
+        "scripts/choosePingIdentity.ts",
+        "scripts/identities.ts",
+        "scripts/pingContext.ts",
         "typings/index.d.ts"
     ]
 }
