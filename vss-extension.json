@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
-    "description": "Describe your extension.",
+    "description": "Bulk mention from backlogs and queries.",
     "publisher": "ottostreifel",
     "icons": {
         "default": "img/logo.svg"
