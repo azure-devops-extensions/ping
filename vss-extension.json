@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "0.1.17",
+    "version": "1.0.1",
     "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Describe your extension.",
@@ -17,6 +17,8 @@
     "tags": [
         "Notification",
         "Work Item",
+        "Mention",
+        "Notification",
         "Query Results",
         "Backlog"
     ],
@@ -24,6 +26,10 @@
         "details": {
             "path": "details.md"
         }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ostreifel/ping"
     },
     "branding": {
         "color": "rgb(220, 235, 252)",
