@@ -6,31 +6,47 @@ import { getAllIdentitiesInAllProjects } from "./identities";
 export interface IPingContext {
     updateOkButton: (boolean) => void;
 }
+export interface IPingArguments {
+    identity: IdentityRef;
+    message: string;
+}
 export interface IPingCallbacks {
-    getIdentity: () => IdentityRef;
+    getArguments: () => IPingArguments;
 }
 
 const { updateOkButton } = VSS.getConfiguration() as IPingContext;
 
 
-const options: IComboOptions = {
+const idOptions: IComboOptions = {
     change: function(this: Combo) {
         updateOkButton(this.getSelectedIndex() >= 0);
     },
-    value: "Loading identities..."
+    value: "Loading identities...",
+    maxAutoExpandDropWidth: 338,
+    dropOptions: {
+        maxRowCount: 3,
+    }
 };
-const combo: Combo = Control.createIn(Combo, $(".identity-container"), options) as Combo;
+const idCombo: Combo = Control.createIn(Combo, $(".args-container"), idOptions) as Combo;
+const messageOptions: IComboOptions = {
+    placeholderText: "Enter message...",
+    mode: "text"
+};
+const messageCombo: Combo = Control.createIn(Combo, $(".args-container"), messageOptions) as Combo;
 
 const cachedIdentities: IdentityRef[] = [];
 getAllIdentitiesInAllProjects().then(identities => {
     cachedIdentities.push(...identities);
-    combo.setSource(identities.map(i => `${i.displayName} <${i.uniqueName}>`));
-    combo.setInputText("");
+    idCombo.setSource(identities.map(i => `${i.displayName} <${i.uniqueName}>`));
+    idCombo.setInputText("");
 });
 
-const getIdentity = () => cachedIdentities[combo.getSelectedIndex()];
+const getArguments = () => {return {
+    identity: cachedIdentities[idCombo.getSelectedIndex()],
+    message: messageCombo.getValue() as string
+}; };
 const callbacks: IPingCallbacks = {
-    getIdentity
+    getArguments
 };
 
 VSS.register("choose-identity", callbacks);

@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "0.1.6",
+    "version": "0.1.17",
     "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Describe your extension.",
@@ -61,7 +61,7 @@
             ],
             "properties": {
                 "group": "contributed",
-                "uri": "context.html"
+                "uri": "pingContext.html"
             }
         },
         {

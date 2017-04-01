@@ -1,12 +1,12 @@
-import { IPingCallbacks, IPingContext } from "./choosePingIdentity";
+import { IPingCallbacks, IPingContext, IPingArguments } from "./choosePingIdentity";
 import * as Q from "q";
 import { getClient } from "TFS/WorkItemTracking/RestClient";
 import { JsonPatchOperation, Operation, IdentityRef } from "VSS/WebApi/Contracts";
 
-function pingWorkItems(identity: IdentityRef, workItemIds: number[]) {
+function pingWorkItems(identity: IdentityRef, message: string, workItemIds: number[]) {
     const updateDoc: JsonPatchOperation = {
         op: Operation.Add,
-        value: `<a href="mailto:${identity.uniqueName}" data-vss-mention="version:1.0">@${identity.displayName}<a/>`,
+        value: `<a href="mailto:${identity.uniqueName}" data-vss-mention="version:1.0">@${identity.displayName}</a><div>${message}</div>`,
         from: null,
         path: "/fields/System.History"
     };
@@ -17,15 +17,15 @@ function createChooseIdentityDialog(actionContext: { workItemIds: number[] }) {
     console.log("action context", actionContext);
     const { workItemIds } = actionContext;
     VSS.getService(VSS.ServiceIds.Dialog).then(function (dialogService: IHostDialogService) {
-        let getIdentity = () => {
+        let getArguments = () => {
             console.log("Get identity not set");
-            return Q({} as IdentityRef);
+            return Q({} as IPingArguments);
         };
 
         let externalDialog: IExternalDialog;
         function save() {
-            return getIdentity().then(identity => {
-                return pingWorkItems(identity, workItemIds).then(() => {
+            return getArguments().then(({identity, message}) => {
+                return pingWorkItems(identity, message, workItemIds).then(() => {
                     externalDialog.close();
                 });
             });
@@ -45,9 +45,7 @@ function createChooseIdentityDialog(actionContext: { workItemIds: number[] }) {
         dialogService.openDialog(contentContribution, dialogOptions, pingContext).then(dialog => {
             externalDialog = dialog;
             dialog.getContributionInstance("choose-identity").then((callbacks: IPingCallbacks) => {
-                dialog.updateOkButton(true);
-                dialog.updateOkButton;
-                getIdentity = callbacks.getIdentity as any;
+                getArguments = callbacks.getArguments as any;
             });
         });
     });
