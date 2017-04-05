@@ -1,13 +1,13 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "name": "Ping",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Bulk mention from backlogs and queries.",
     "publisher": "ottostreifel",
     "icons": {
-        "default": "img/logo.svg"
+        "default": "img/logo.png"
     },
     "targets": [
         {
