@@ -4,16 +4,18 @@ import { getClient } from "TFS/WorkItemTracking/RestClient";
 import { WorkItem } from "TFS/WorkItemTracking/Contracts";
 import { JsonPatchOperation, Operation, IdentityRef } from "VSS/WebApi/Contracts";
 import { isIdentityField } from "./identities";
+import { trackEvent } from "./events";
 
 function pingWorkItems(message: string, workItemIds: number[], refNameOrIdentity: string | IdentityRef) {
     const wiPromise = refNameOrIdentity instanceof String || typeof refNameOrIdentity === "string" ? getClient().getWorkItems(workItemIds, [refNameOrIdentity]) : Q([] as WorkItem[]);
     return wiPromise.then(wis => {
         if (refNameOrIdentity instanceof String || typeof refNameOrIdentity === "string") {
             const refName = refNameOrIdentity;
+            trackEvent("ping", { identityFrom: refName });
             return Q.all(wis.map(wi => {
                 const idstring = wi.fields[refName];
                 const match: string[] = idstring.match(/(.*) <(.*)>/) || ["", "", "No identity found"];
-                const [,displayName, uniqueName] = match;
+                const [, displayName, uniqueName] = match;
 
                 const updateDoc: JsonPatchOperation = {
                     op: Operation.Add,
@@ -24,6 +26,7 @@ function pingWorkItems(message: string, workItemIds: number[], refNameOrIdentity
                 getClient().updateWorkItem([updateDoc], wi.id);
             }));
         } else {
+            trackEvent("ping", { identityFrom: "value" });
             const identity = refNameOrIdentity;
             const updateDoc: JsonPatchOperation = {
                 op: Operation.Add,
@@ -71,6 +74,7 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
             updateOkButton: (enabled) => externalDialog.updateOkButton(enabled)
         };
         dialogService.openDialog(contentContribution, dialogOptions, pingContext).then(dialog => {
+            trackEvent("pingDialog", { identityFrom: refName || "value" });
             externalDialog = dialog;
             dialog.getContributionInstance("choose-identity").then((callbacks: IPingCallbacks) => {
                 getArguments = callbacks.getArguments as any;
@@ -81,14 +85,14 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
 
 function createMenuItems(workItemIds: number[]): IPromise<IContributedMenuItem[]> {
     return getClient().getWorkItems(workItemIds).then((workitems: WorkItem[]) => {
-        const filledIdFields: {[refName: string]: boolean} = {};
-        if (workitems.length > 0)  {
+        const filledIdFields: { [refName: string]: boolean } = {};
+        if (workitems.length > 0) {
             for (let id in workitems[0].fields) {
                 if (isIdentityField(id)) {
                     filledIdFields[id] = true;
                 }
             }
-            for (let {fields} of workitems.slice(1)) {
+            for (let { fields } of workitems.slice(1)) {
                 for (let id in filledIdFields) {
                     filledIdFields[id] = filledIdFields[id] && Object.keys(fields).some(f => f === id);
                 }
@@ -98,7 +102,7 @@ function createMenuItems(workItemIds: number[]): IPromise<IContributedMenuItem[]
 
         // Now get each wit for the selected work items.
         return getClient().getFields().then(fields => {
-            const nameLookup: {[referenceName: string]: string} = {};
+            const nameLookup: { [referenceName: string]: string } = {};
             for (let field of fields) {
                 nameLookup[field.referenceName] = field.name;
             }

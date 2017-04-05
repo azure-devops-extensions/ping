@@ -12,6 +12,7 @@
     ],
     "files": [
         "scripts/choosePingIdentity.ts",
+        "scripts/events.ts",
         "scripts/identities.ts",
         "scripts/pingContext.ts",
         "typings/index.d.ts"
