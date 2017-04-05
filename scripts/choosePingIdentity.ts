@@ -4,17 +4,18 @@ import { JsonPatchOperation, Operation, IdentityRef } from "VSS/WebApi/Contracts
 import { getAllIdentitiesInAllProjects } from "./identities";
 
 export interface IPingContext {
+    fieldName?: string;
     updateOkButton: (boolean) => void;
 }
 export interface IPingArguments {
-    identity: IdentityRef;
+    identity?: IdentityRef;
     message: string;
 }
 export interface IPingCallbacks {
     getArguments: () => IPingArguments;
 }
 
-const { updateOkButton } = VSS.getConfiguration() as IPingContext;
+const { updateOkButton, fieldName } = VSS.getConfiguration() as IPingContext;
 
 
 const idOptions: IComboOptions = {
@@ -27,7 +28,17 @@ const idOptions: IComboOptions = {
         maxRowCount: 3,
     }
 };
-const idCombo: Combo = Control.createIn(Combo, $(".args-container"), idOptions) as Combo;
+let idCombo: Combo | undefined;
+if (fieldName) {
+    updateOkButton(true);
+} else {
+    const idCombo: Combo = Control.createIn(Combo, $(".args-container"), idOptions) as Combo;
+    getAllIdentitiesInAllProjects().then(identities => {
+        cachedIdentities.push(...identities);
+        idCombo.setSource(identities.map(i => `${i.displayName} <${i.uniqueName}>`));
+        idCombo.setInputText("");
+    });
+}
 const messageOptions: IComboOptions = {
     placeholderText: "Enter message...",
     mode: "text"
@@ -35,14 +46,9 @@ const messageOptions: IComboOptions = {
 const messageCombo: Combo = Control.createIn(Combo, $(".args-container"), messageOptions) as Combo;
 
 const cachedIdentities: IdentityRef[] = [];
-getAllIdentitiesInAllProjects().then(identities => {
-    cachedIdentities.push(...identities);
-    idCombo.setSource(identities.map(i => `${i.displayName} <${i.uniqueName}>`));
-    idCombo.setInputText("");
-});
 
 const getArguments = () => {return {
-    identity: cachedIdentities[idCombo.getSelectedIndex()],
+    identity: idCombo && cachedIdentities[idCombo.getSelectedIndex()],
     message: messageCombo.getValue() as string
 }; };
 const callbacks: IPingCallbacks = {

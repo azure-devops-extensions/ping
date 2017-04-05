@@ -2,7 +2,8 @@
     "compilerOptions": {
         "module": "amd",
         "sourceMap": false,
-        "rootDir": "./scripts"
+        "rootDir": "./scripts",
+        "strictNullChecks": true
     },
     "filesGlob": [
         "./scripts/**/*.ts",
