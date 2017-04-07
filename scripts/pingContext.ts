@@ -125,7 +125,7 @@ const actionProvider: IContributedMenuSource = {
         const { workItemIds } = context;
         console.log("context", context);
         const items: IContributedMenuItem[] = [{
-            text: "Ping",
+            text: "Ping!",
             icon: "/img/logo.svg",
             childItems: createMenuItems(workItemIds),
         }];
