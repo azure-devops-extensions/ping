@@ -4,14 +4,15 @@ import { getClient } from "TFS/WorkItemTracking/RestClient";
 import { WorkItem } from "TFS/WorkItemTracking/Contracts";
 import { JsonPatchOperation, Operation, IdentityRef } from "VSS/WebApi/Contracts";
 import { isIdentityField } from "./identities";
-import { trackEvent } from "./events";
+import { trackEvent, trackPageView } from "./events";
+import { Timings } from "./timings";
 
-function pingWorkItems(message: string, workItemIds: number[], refNameOrIdentity: string | IdentityRef) {
+function pingWorkItems(message: string, workItemIds: number[], refNameOrIdentity: string | IdentityRef, pingTImings: Timings) {
     const wiPromise = refNameOrIdentity instanceof String || typeof refNameOrIdentity === "string" ? getClient().getWorkItems(workItemIds, [refNameOrIdentity]) : Q([] as WorkItem[]);
     return wiPromise.then(wis => {
+        pingTImings.measure("readWorkItems");
         if (refNameOrIdentity instanceof String || typeof refNameOrIdentity === "string") {
             const refName = refNameOrIdentity;
-            trackEvent("ping", { identityFrom: refName });
             return Q.all(wis.map(wi => {
                 const idstring = wi.fields[refName];
                 const match: string[] = idstring.match(/(.*) <(.*)>/) || ["", "", "No identity found"];
@@ -26,7 +27,6 @@ function pingWorkItems(message: string, workItemIds: number[], refNameOrIdentity
                 getClient().updateWorkItem([updateDoc], wi.id);
             }));
         } else {
-            trackEvent("ping", { identityFrom: "value" });
             const identity = refNameOrIdentity;
             const updateDoc: JsonPatchOperation = {
                 op: Operation.Add,
@@ -55,7 +55,17 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
                 if (!identityOrRefName) {
                     throw new Error("Refname or identity must have value");
                 }
-                return pingWorkItems(message, selectedWorkItems, identityOrRefName).then(() => {
+                const pingTimings = new Timings();
+                return pingWorkItems(message, selectedWorkItems, identityOrRefName, pingTimings).then(() => {
+                    pingTimings.measure("updateWorkItems");
+                    pingTimings.measure("total", true);
+                    const identityFrom = (identityOrRefName instanceof String || typeof identityOrRefName === "string") ? identityOrRefName : "value";
+                    trackEvent("ping", {
+                        identityFrom: identityFrom,
+                        wiCount: String(selectedWorkItems.length),
+                        messageLength: String(message.length)
+                    }, pingTimings.measurements);
+                    new Audio("/ping.mp3").play();
                     externalDialog.close();
                 });
             });
@@ -74,7 +84,6 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
             updateOkButton: (enabled) => externalDialog.updateOkButton(enabled)
         };
         dialogService.openDialog(contentContribution, dialogOptions, pingContext).then(dialog => {
-            trackEvent("pingDialog", { identityFrom: refName || "value" });
             externalDialog = dialog;
             dialog.getContributionInstance("choose-identity").then((callbacks: IPingCallbacks) => {
                 getArguments = callbacks.getArguments as any;
@@ -115,6 +124,7 @@ function createMenuItems(workItemIds: number[]): IPromise<IContributedMenuItem[]
                     action: context => createChooseIdentityDialog(context, id, nameLookup[id]),
                 } as IContributedMenuItem;
             })];
+            trackPageView("pingContext", { wiCount: String(workItemIds.length), fieldCount: String(idFields.length) });
             return menuItems;
         });
     });
@@ -123,6 +133,7 @@ function createMenuItems(workItemIds: number[]): IPromise<IContributedMenuItem[]
 const actionProvider: IContributedMenuSource = {
     getMenuItems: (context: { workItemIds: number[] }) => {
         const { workItemIds } = context;
+        new Audio("/ping.mp3").play();
         console.log("context", context);
         const items: IContributedMenuItem[] = [{
             text: "Ping!",

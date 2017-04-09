@@ -15,6 +15,7 @@
         "scripts/events.ts",
         "scripts/identities.ts",
         "scripts/pingContext.ts",
+        "scripts/timings.ts",
         "typings/index.d.ts"
     ]
 }

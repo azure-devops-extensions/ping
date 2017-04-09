@@ -2,6 +2,7 @@ import { Combo, IComboOptions } from "VSS/Controls/Combos";
 import { Control } from "VSS/Controls";
 import { JsonPatchOperation, Operation, IdentityRef } from "VSS/WebApi/Contracts";
 import { getAllIdentitiesInAllProjects } from "./identities";
+import { trackPageView, trackEvent } from "./events";
 
 export interface IPingContext {
     fieldName?: string;
@@ -55,4 +56,5 @@ const callbacks: IPingCallbacks = {
     getArguments
 };
 
+trackPageView("messageDialog", {field: fieldName || "value"});
 VSS.register("choose-identity", callbacks);
