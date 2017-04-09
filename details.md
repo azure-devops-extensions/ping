@@ -4,5 +4,6 @@ Optionally include a message with the mention.
 ![Ping dialog](img/pingDialog.png)  
 
 # Change Log
+(04/04/17) v1.1.18 Ping sound effect  
 (04/04/17) v1.1.1 Ping by field value  
 (04/01/17) v1.0.1 Initial Version  

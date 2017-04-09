@@ -65,7 +65,7 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
                         wiCount: String(selectedWorkItems.length),
                         messageLength: String(message.length)
                     }, pingTimings.measurements);
-                    new Audio("/ping.mp3").play();
+                    new Audio("ping.mp3").play();
                     externalDialog.close();
                 });
             });
@@ -133,7 +133,6 @@ function createMenuItems(workItemIds: number[]): IPromise<IContributedMenuItem[]
 const actionProvider: IContributedMenuSource = {
     getMenuItems: (context: { workItemIds: number[] }) => {
         const { workItemIds } = context;
-        new Audio("/ping.mp3").play();
         console.log("context", context);
         const items: IContributedMenuItem[] = [{
             text: "Ping!",
