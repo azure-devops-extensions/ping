@@ -65,7 +65,6 @@ function createChooseIdentityDialog(actionContext: { selectedWorkItems: number[]
                         wiCount: String(selectedWorkItems.length),
                         messageLength: String(message.length)
                     }, pingTimings.measurements);
-                    new Audio("ping.mp3").play();
                     externalDialog.close();
                 });
             });

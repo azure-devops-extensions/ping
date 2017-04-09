@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "ping",
-    "version": "1.1.20",
+    "version": "1.1.21",
     "name": "Ping!",
     "scopes": [ "vso.work", "vso.work_write" ],
     "description": "Bulk mention from backlogs and queries.",
@@ -50,10 +50,6 @@
         },
         {
             "path": "choosePingIdentity.html",
-            "addressable": true
-        },
-        {
-            "path": "ping.mp3",
             "addressable": true
         }
     ],
