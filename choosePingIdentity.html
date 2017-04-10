@@ -16,11 +16,39 @@
     <script src="build/VSS.SDK.min.js"></script>
     <style>
         .args-container {
-            padding-right: 10px;
+            padding-right: 17px;
+        }
+        .extension-info:not(:hover):not(:focus) .extension-callout {
+            visibility: hidden;
+        }
+        .extension-info {
+            float: right;
+            margin-right: 1px;
+        }
+        .extension-info .extension-callout {
+            color: black;
+            border: solid 2px #eaeaea;
+            text-align: center;
+            position: absolute;
+            z-index: 1;
+            top: 1em;
+            right: 0px;
+            width: 350px;
+            margin-left: -100px;
+            background-color: white;
+            padding: 8px;
         }
     </style>
 </head>
 <body>
+    <span class="bowtie-icon bowtie-status-info extension-info" tabindex="0">
+            <div class="extension-callout">
+                <div>Thank you for using the Ping Extension!</div>
+                <a href="https://marketplace.visualstudio.com/items?itemName=ottostreifel.ping" target="_blank">Write a review</a> |
+                <a href="https://github.com/ostreifel/Ping/issues" target="_blank">Report an issue</a> |
+                <a href="mailto:pingextension@microsoft.com" target="_blank">Feedback and suggstions</a>
+            </div>
+    </span>
     <div class="args-container"></div>
     <script type="text/javascript">
         // Initialize framework 
