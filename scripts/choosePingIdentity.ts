@@ -18,7 +18,7 @@ export interface IPingCallbacks {
 
 const { updateOkButton, fieldName } = VSS.getConfiguration() as IPingContext;
 
-
+const argsContainer = $(".args-container");
 const idOptions: IComboOptions = {
     change: function(this: Combo) {
         updateOkButton(this.getSelectedIndex() >= 0);
@@ -33,24 +33,29 @@ let idCombo: Combo | undefined;
 if (fieldName) {
     updateOkButton(true);
 } else {
-    const idCombo: Combo = Control.createIn(Combo, $(".args-container"), idOptions) as Combo;
+    const idCombo: Combo = Control.createIn(Combo, argsContainer, idOptions) as Combo;
     getAllIdentitiesInAllProjects().then(identities => {
         cachedIdentities.push(...identities);
         idCombo.setSource(identities.map(i => `${i.displayName} <${i.uniqueName}>`));
         idCombo.setInputText("");
     });
 }
-const messageOptions: IComboOptions = {
-    placeholderText: "Enter message...",
-    mode: "text"
-};
-const messageCombo: Combo = Control.createIn(Combo, $(".args-container"), messageOptions) as Combo;
+const messageInput: JQuery = $(`<textarea 
+    class="message-input"
+    placeholder="Enter message..."
+    rows=3
+/>`);
+function messageValue() {
+    const rawVal = messageInput.val() as string;
+    return rawVal.replace(/\n/g, '<br>');
+}
+argsContainer.append(messageInput);
 
 const cachedIdentities: IdentityRef[] = [];
 
 const getArguments = () => {return {
     identity: idCombo && cachedIdentities[idCombo.getSelectedIndex()],
-    message: messageCombo.getValue() as string
+    message: messageValue()
 }; };
 const callbacks: IPingCallbacks = {
     getArguments
